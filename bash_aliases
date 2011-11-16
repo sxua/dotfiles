@@ -1,40 +1,47 @@
-alias ll="ls -l"
-alias la="ls -A"
-alias ports="cd /opt/local/var/macports/sources/rsync.macports.org/release/tarballs/ports/"
+if [ $(uname) == 'Darwin' ]; then
+  alias ll="ls -l"
+  alias la="ls -A"
+  alias ports="cd /opt/local/var/macports/sources/rsync.macports.org/release/tarballs/ports/"
 
-# nginx
+  # nginx
 
-function ngs {
-  echo "Starting nginx ..."
-  sudo port load nginx
-}
+  function ngs {
+    echo "Starting nginx ..."
+    sudo port load nginx
+  }
 
-function ngq {
-  echo "Stopping nginx ..."
-  sudo port unload nginx
-}
+  function ngq {
+    echo "Stopping nginx ..."
+    sudo port unload nginx
+  }
 
-function ngr {
-  echo "Reloading nginx config ..."
-  sudo nginx -s reload
-}
+  function ngr {
+    echo "Reloading nginx config ..."
+    sudo nginx -s reload
+  }
 
-# postgresql
+  # postgresql
 
-function pgs {
-  echo "Starting PostgreSQL server ..."
-  sudo port load postgresql90-server
-}
+  function pgs {
+    echo "Starting PostgreSQL server ..."
+    sudo port load postgresql90-server
+  }
 
-function pgq {
-  echo "Stopping PostgreSQL server ..."
-  sudo port unload postgresql90-server
-}
+  function pgq {
+    echo "Stopping PostgreSQL server ..."
+    sudo port unload postgresql90-server
+  }
 
-function pgr {
-  echo "Restarting PostgreSQL server ..."
-  sudo /opt/local/etc/LaunchDaemons/org.macports.postgresql90-server/postgresql90-server.wrapper restart
-}
+  function pgr {
+    echo "Restarting PostgreSQL server ..."
+    sudo /opt/local/etc/LaunchDaemons/org.macports.postgresql90-server/postgresql90-server.wrapper restart
+  }
+
+  function psg {
+    ps wwwaux | egrep "($1|%CPU)" | grep -v grep
+  }
+
+fi
 
 # cdgem
 
@@ -46,7 +53,7 @@ function cg {
 # rails
 
 function sc {
-  if [ -f config/environment.rb ] && which -s pry; then
+  if [ -f config/environment.rb ] && [ $(which pry) ]; then
     pry -r./config/environment.rb
   elif [ -x script/rails ]; then
     script/rails console
@@ -95,8 +102,4 @@ function sr {
   else
     echo "cd to app directory first"
   fi
-}
-
-function psg {
-  ps wwwaux | egrep "($1|%CPU)" | grep -v grep
 }
