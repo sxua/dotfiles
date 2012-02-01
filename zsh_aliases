@@ -1,46 +1,44 @@
-if [ $(uname) == 'Darwin' ]; then
-  alias ll="ls -l"
-  alias la="ls -A"
+alias -g PP='| grep -v paperclip' # temporary removes annoying paperclip messages from development log (use: devlog PP)
 
-  # nginx
+# nginx
 
-  function ngs {
-    echo "Starting nginx ..."
-    sudo nginx
-  }
+function ngs {
+  echo "Starting nginx ..."
+  sudo nginx
+}
 
-  function ngq {
-    echo "Stopping nginx ..."
-    sudo nginx -s stop
-  }
+function ngq {
+  echo "Stopping nginx ..."
+  sudo nginx -s stop
+}
 
-  function ngr {
-    echo "Reloading nginx config ..."
-    sudo nginx -s reload
-  }
+function ngr {
+  echo "Reloading nginx config ..."
+  sudo nginx -s reload
+}
 
-  # postgresql
+# postgresql
 
-  function pgs {
-    echo "Starting PostgreSQL server ..."
-    lunchy start -w postgres
-  }
+function pgs {
+  echo "Starting PostgreSQL server ..."
+  lunchy start -w postgres
+}
 
-  function pgq {
-    echo "Stopping PostgreSQL server ..."
-    lunchy stop postgres
-  }
+function pgq {
+  echo "Stopping PostgreSQL server ..."
+  lunchy stop postgres
+}
 
-  function pgr {
-    echo "Restarting PostgreSQL server ..."
-    lunchy restart postgres
-  }
+function pgr {
+  echo "Restarting PostgreSQL server ..."
+  lunchy restart postgres
+}
 
-  function psg {
-    ps wwwaux | egrep "($1|%CPU)" | grep -v grep
-  }
+# processes
 
-fi
+function psg {
+  ps wwwaux | egrep "($1|%CPU)" | grep -v grep
+}
 
 # cdgem
 
@@ -51,19 +49,21 @@ function cg {
 
 # rails
 
+cd_to_app="cd to app directory first"
+
 function sc {
-  if [ -f config/environment.rb ] && [ $(which pry) ]; then
+  if [ -f config/environment.rb ] && [ $(rbenv which pry &> /dev/null) ]; then
     pry -r./config/environment.rb
   elif [ -x script/rails ]; then
     script/rails console
   elif [ -x script/console ]; then
     script/console
   else
-    echo "cd to add directory first"
+    echo $cd_to_app
   fi
 }
 
-function ss() {
+function ss {
   if [ -x unicorn_rails ]; then
     echo "Starting Unicorn ..."
     bundle exec unicorn_rails -E development -c unicorn.conf.rb -D
@@ -74,7 +74,7 @@ function ss() {
     echo "Starting Rails 3 server ..."
     script/rails server
   else
-    echo "cd to app directory first"
+    echo $cd_to_app
   fi
 }
 
@@ -85,6 +85,8 @@ function sq {
   elif [ -f tmp/pids/server.pid ]; then
     echo "Stopping Rails server ..."
     kill `cat tmp/pids/server.pid`
+  else
+    echo $cd_to_app
   fi
 }
 
@@ -99,6 +101,6 @@ function sr {
     echo "Restarting Passenger instances ..."
     touch tmp/restart.txt
   else
-    echo "cd to app directory first"
+    echo $cd_to_app
   fi
 }

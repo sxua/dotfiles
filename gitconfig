@@ -3,3 +3,5 @@
 	email = ukraine.sax@gmail.com
 [color]
 	ui = true
+[mergetool]
+	keepBackup = true
