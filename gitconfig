@@ -1,9 +1,9 @@
 [user]
-	name = Olexandr Skrypnyk
-	email = ukraine.sax@gmail.com
+  name = Olexandr Skrypnyk
+  email = ukraine.sax@gmail.com
 [color]
-	ui = true
+  ui = true
 [mergetool]
-	keepBackup = true
+  keepBackup = true
 [github]
-	user = sxua
+  user = sxua
