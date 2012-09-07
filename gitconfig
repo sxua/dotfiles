@@ -5,3 +5,5 @@
 	ui = true
 [mergetool]
 	keepBackup = true
+[github]
+	user = sxua

@@ -2,23 +2,21 @@ ZSH=$HOME/.oh-my-zsh
 
 brewbin=/usr/local/bin
 if [ -d $brewbin ]; then
-  export PATH=$brewbin:/usr/local/sbin:$(echo $PATH | sed -E "s%$brewbin:?%%")
+  export PATH=$brewbin:/usr/local/sbin:/usr/local/share/python:$(echo $PATH | sed -E "s%$brewbin:?%%")
 fi
 if [ -f $brewbin/rbenv ]; then
   eval "$(rbenv init -)"
 fi
 
-node_modules=/usr/local/lib/node_modules
-if [ -d $node_modules ]; then
-  export NODE_PATH=$node_modules
-  export PATH=$node_modules:$(echo $PATH | sed -E "s%$node_modules:?%%")
-fi
+export RBX_ROOT=$HOME/.rbenv/versions/rbx-2.0.0-dev
+export PATH=/usr/local/Cellar/ruby/1.9.3-p194/bin:$RBX_ROOT/gems/1.9/bin:$PATH
+export NODE_PATH=/usr/local/lib/node_modules
 
 if [ -d $ZSH ]; then
   CASE_SENSITIVE="true"
   COMPLETION_WAITING_DOTS="true"
 
-  plugins=(brew bundler git osx heroku rails3 rbenv)
+  plugins=(brew git osx heroku rails3 rbenv)
     
   for plugin ($plugins); do
     fpath=($ZSH/plugins/$plugin $fpath)
@@ -51,7 +49,7 @@ export GREP_COLOR='1;32'
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$reset_color%}%{$fg[yellow]%}["
 ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}*%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}●%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_CLEAN=""
 ZSH_THEME_GIT_PROMPT_SHA_BEFORE="%{$fg[white]%}@"
 ZSH_THEME_GIT_PROMPT_SHA_AFTER="%{$reset_color%}%{$fg[yellow]%}"
@@ -84,12 +82,16 @@ git_custom_status() {
 # show current rbenv version if different from rbenv global
 rbenv_version_status() {
   local ver=$(rbenv version-name)
-  [ "$(rbenv global)" != "$ver" ] && echo "[$ver]"
+  if [ "$(rbenv global)" != "$ver" ]; then
+    echo "%{$fg[red]%}[$ver]%{$reset_color%}"
+  else
+    echo "%{$fg[green]%}໐%{$reset_color%}%{$fg[red]%}[%{$reset_color%}%{$fg[red]%}$ver]%{$reset_color%}"
+  fi
 }
 
 # put fancy stuff on the right
 if which rbenv &> /dev/null; then
-  RPS1='$(git_custom_status)%{$fg[red]%}$(rbenv_version_status)%{$reset_color%} $EPS1'
+  RPS1='$(git_custom_status)$(rbenv_version_status) $EPS1'
 else
   RPS1='$(git_custom_status) $EPS1'
 fi

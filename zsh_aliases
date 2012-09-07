@@ -1,4 +1,6 @@
-alias -g PP='| grep -v paperclip' # temporary removes annoying paperclip messages from development log (use: devlog PP)
+alias be='bundle exec'
+alias smate='ssh -R 52698:localhost:52698'
+alias pserver='python -m SimpleHTTPServer'
 
 # nginx
 
@@ -34,25 +36,49 @@ function pgr {
   lunchy restart postgres
 }
 
-# processes
-
-function psg {
-  ps wwwaux | egrep "($1|%CPU)" | grep -v grep
-}
-
 # cdgem
 
 function cg {
-  cd `gem env gemdir`/gems
-  cd `ls | grep ^$1 | sort | tail -1`
+  gems=( $(find `gem env gemdir`/gems -d -iname "*$1*" -mindepth 1 -maxdepth 1) )
+  gem_path=""
+  if [ ${#gems[@]} -gt 1 ]; then
+    echo "\tThere's more than one gem founded:\n"
+    N=1
+    for i in "${gems[@]}"; do
+      echo "\t$N) ${i##*/}"
+      let "N = $N + 1"
+    done
+    echo "\n\tPlease, enter gem number you want to go for:"
+    read number
+    if [[ $(echo {1..${#gems[@]}}) =~ $number ]]; then
+      gem_path=${gems[$number]}
+    else
+      return 1
+    fi
+  else
+    gem_path=$gems
+  fi
+  pushd $gem_path && clear
 }
 
 # rails
 
 cd_to_app="cd to app directory first"
+puma_config="./config/puma.rb"
+puma_pid="./tmp/pids/puma.pid"
+unicorn_config="./config/unicorn.rb"
+unicorn_pid="./tmp/pids/unicorn.pid"
+
+function bundled {
+  if [ -f ./Gemfile ]; then
+    check=$(cat ./Gemfile | grep -i $1 2> /dev/null) && [ $check ]
+  else
+    return 1
+  fi
+}
 
 function sc {
-  if [ -f config/environment.rb ] && [ $(rbenv which pry &> /dev/null) ]; then
+  if [ -f ./config/environment.rb ] && [ $(rbenv which pry) ]; then
     pry -r./config/environment.rb
   elif [ -x script/rails ]; then
     script/rails console
@@ -64,9 +90,9 @@ function sc {
 }
 
 function ss {
-  if [ -x unicorn_rails ]; then
+  if [ -f $unicorn_config ] && bundled unicorn; then
     echo "Starting Unicorn ..."
-    bundle exec unicorn_rails -E development -c unicorn.conf.rb -D
+    bundle exec unicorn_rails -E development -c $unicorn_config -D
   elif [ -x script/server ]; then
     echo "Starting Rails 2 server ..."
     script/server
@@ -78,10 +104,25 @@ function ss {
   fi
 }
 
+function ssp {
+  if [ -f $unicorn_config ] && bundled unicorn; then
+    echo "Starting Unicorn in production ..."
+    bundle exec unicorn_rails -E production -c $unicorn_config -D
+  elif [ -x script/server ]; then
+    echo "Starting Rails 2 server in production ..."
+    script/server production
+  elif [ -x script/rails ]; then
+    echo "Starting Rails 3 server in production ..."
+    script/rails server -e production
+  else
+    echo $cd_to_app
+  fi
+}
+
 function sq {
-  if [ -f tmp/pids/unicorn.pid ]; then
+  if [ -f $unicorn_pid ]; then
     echo "Stopping Unicorn ..."
-    kill `cat tmp/pids/unicorn.pid`
+    kill `cat $unicorn_pid`
   elif [ -f tmp/pids/server.pid ]; then
     echo "Stopping Rails server ..."
     kill `cat tmp/pids/server.pid`
@@ -91,12 +132,12 @@ function sq {
 }
 
 function sr {
-  if [ -f tmp/pids/unicorn.pid ]; then
+  if [ -f $unicorn_pid ]; then
     echo "Restarting Unicorn ..."
-    kill -USR2 `cat tmp/pids/unicorn.pid`
+    kill -s USR2 `cat $unicorn_pid`
   elif [ -f tmp/pids/server.pid ]; then
     echo "Restarting Rails server ..."
-    kill -USR2 `cat tmp/pids/server.pid`
+    kill -s USR2 `cat tmp/pids/server.pid`
   elif [ -d tmp ]; then
     echo "Restarting Passenger instances ..."
     touch tmp/restart.txt
