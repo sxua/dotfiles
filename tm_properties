@@ -5,7 +5,7 @@ fontSize         = 13
 
 # Extra files to include
 #
-myExtraIncludes = ".tm_properties,.htaccess"
+myExtraIncludes = ".tm_properties,.htaccess,.travis.yml"
 myExtraExcludes = "tmtags*"
 fileBrowserGlob  = "{*,$myExtraIncludes}"
 include = "{$include,$myExtraIncludes}"
@@ -23,13 +23,13 @@ excludeInFolderSearch = "{$excludeInFolderSearch,$myExtraExcludes}"
 # excludeInBrowser      = "{$excludeInBrowser,log,vendor,tmp}"
 PATH = "/Users/sax/.rbenv/shims:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/local/sbin:/bin:/sbin"
 TM_GIT = "/usr/local/bin/git"
-RBENV_VERSION = "1.9.3-p194"
+RBENV_VERSION = "1.9.3-p286-perf"
 TM_RUBY = "/Users/sax/.rbenv/shims/ruby"
 
 # Default editing configuration
 #
 softWrap         = false
-wrapColumn       = 200
+wrapColumn       = 1000
 softTabs         = true
 tabSize          = 2
 
