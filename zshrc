@@ -11,7 +11,7 @@ fi
 export RBENV_BOOTSTRAP_GEMS="bundler lunchy rubygems-bundler proxylocal"
 
 export RBX_ROOT=$HOME/.rbenv/versions/rbx-2.0.0-dev
-export PATH=/usr/local/Cellar/ruby/1.9.3-p194/bin:$RBX_ROOT/gems/1.9/bin:$PATH
+export PATH=/usr/local/Cellar/ruby/1.9.3-p327/bin:$RBX_ROOT/gems/1.9/bin:$PATH
 export NODE_PATH=/usr/local/lib/node_modules
 
 if [ -d $ZSH ]; then
