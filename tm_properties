@@ -17,6 +17,8 @@ myExtraExcludes = "log,vendor,tmp"
 excludeInFileChooser  = "{$excludeInFileChooser,$myExtraExcludes}" 
 excludeInFolderSearch = "{$excludeInFolderSearch,$myExtraExcludes}" 
 
+scmStatus = false
+
 # If you also want to hide them from your project manager pane, add
 # the following line to your project's local .tm_properties.
 #
