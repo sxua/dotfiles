@@ -1,6 +1,8 @@
-alias be='bundle exec'
 alias smate='ssh -R 52698:localhost:52698'
 alias pserver='python -m SimpleHTTPServer'
+alias symbolicatecrash='/Applications/Xcode.app/Contents/SharedFrameworks/DVTFoundation.framework/Versi‌​ons/A/Resources/symbolicatecrash'
+
+export DEVELOPER_DIR=`xcode-select -print-path`
 
 # cdgem
 

@@ -2,23 +2,27 @@ ZSH=$HOME/.oh-my-zsh
 
 brewbin=/usr/local/bin
 if [ -d $brewbin ]; then
-  export PATH=$brewbin:/usr/local/sbin:/usr/local/share/python:$(echo $PATH | sed -E "s%$brewbin:?%%")
+  export PATH=$brewbin:/usr/local/sbin:$(echo $PATH | sed -E "s%$brewbin:?%%")
 fi
 if [ -f $brewbin/rbenv ]; then
   eval "$(rbenv init -)"
 fi
 
-export RBENV_BOOTSTRAP_GEMS="bundler lunchy rubygems-bundler proxylocal"
+export MACOSX_DEPLOYMENT_TARGET=10.11
+export SDKROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/
 
-export RBX_ROOT=$HOME/.rbenv/versions/rbx-2.0.0-dev
-export PATH=/usr/local/Cellar/ruby/1.9.3-p327/bin:$RBX_ROOT/gems/1.9/bin:$PATH
+export PATH=/usr/local/share/npm/bin:$PATH
 export NODE_PATH=/usr/local/lib/node_modules
+export NVM_DIR=~/.nvm
+# source $(brew --prefix nvm)/nvm.sh
+
+export PATH=~/.android/sdk/ndk-bundle:~/.android/sdk/platform-tools:$PATH
 
 if [ -d $ZSH ]; then
-  CASE_SENSITIVE="true"
+  CASE_SENSITIVE="false"
   COMPLETION_WAITING_DOTS="true"
 
-  plugins=(brew git osx heroku rails3 rbenv)
+  plugins=(brew bundler colored-man cp extract gem osx pod textmate)
     
   for plugin ($plugins); do
     fpath=($ZSH/plugins/$plugin $fpath)
@@ -48,6 +52,7 @@ ls --color -d . &>/dev/null 2>&1 && alias ls='ls --color=tty' || alias ls='ls -G
 
 export GREP_OPTIONS='--color=auto'
 export GREP_COLOR='1;32'
+export GPG_TTY=`tty`
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$reset_color%}%{$fg[yellow]%}["
 ZSH_THEME_GIT_PROMPT_SUFFIX="]%{$reset_color%}"
